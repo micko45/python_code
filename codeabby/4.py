@@ -6,10 +6,8 @@ answer = []
 
 for i in range(0, int(count)): 
   num1, num2 = raw_input().split()
-  print num1
-  if num1 > num2:
+  if int(num1) < int(num2):
     answer.append(num1)
-    print "yes"
   else:
      answer.append(num2)
 
