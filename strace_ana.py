@@ -57,6 +57,16 @@ def syscalls_count(syscalls_array):
 
   return c
 
+#count amount of calls, return hash table
+def syscalls_count_wip(syscalls_array):
+  c = Counter(syscalls_array)
+  D = {}
+  for ele in  c:
+    D[ele] = c[ele]
+
+  return D
+
+
 #Work out total time per systemcall
 def syscall_uniquie_time(syscall, strace_file):
   data = open(strace_file)
@@ -64,14 +74,13 @@ def syscall_uniquie_time(syscall, strace_file):
 
   for line in data:
     if syscall in line:
-      total = total + float(syscall_gettime(line))
-  return total
+      total = total + round(float(syscall_gettime(line)),4)
+  return round(total,5) 
 
 #print out stuff
 #for i in range(len(data)):
 #  print data[i]
 
-#data = syscall_total_time(strace_data)
 #print "total: ", sum(data),
 
 #for x in range(len(unique)):
@@ -83,18 +92,15 @@ def syscall_uniquie_time(syscall, strace_file):
 
 syscalls_array = syscalls_get(strace_data)
 unique =  syscalls_unique(syscalls_array)
-syscall_to_check = "newfstatat"
-c = syscalls_count(syscalls_array)
-#print type(c)
-#print list(c)
-for ele in  c:
-  print ele,c[ele]
+D = syscalls_count_wip(syscalls_array)
+total_time = syscall_total_time(strace_data)
 
-
-#print "total time in call :", syscall_to_check, syscall_uniquie_time(syscall_to_check, strace_data)
 def print_unique_time():
+  print '%-15s %8s %8s' % ('Calls', 'Time', 'Num')
+  print ("=" * 34)
   for i in range(len(unique)):
-    print "total time in call :", unique[i], syscall_uniquie_time(unique[i], strace_data)
-
-#print_unique_time()
-
+    time_in_call = format(syscall_uniquie_time(unique[i], strace_data), '.4f')
+    num_of_calls = D[unique[i]]
+    print '%-15s %8s %8s' % (unique[i], time_in_call, num_of_calls)
+  print 'total Run time: ', sum(total_time)
+print_unique_time()
